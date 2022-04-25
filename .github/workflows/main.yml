@@ -17,5 +17,9 @@ jobs:
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
           usedocker: true
           stack: "container"
+          docker_build_args: |
+            SERVER_URL
+            MAPBOX_WEB_TOKEN
+            CLOTHES_CONTAINERS_PATH
         env:
           HD_MAPBOX_WEB_TOKEN: ${{secrets.MAPBOX_WEB_TOKEN}}
