@@ -19,7 +19,9 @@ jobs:
           stack: "container"
           docker_build_args: |
             SERVER_URL
-            MAPBOX_WEB_TOKEN
+            MAPBOX_TOKEN_PATH
             CLOTHES_CONTAINERS_PATH
         env:
-          HD_MAPBOX_WEB_TOKEN: ${{secrets.MAPBOX_WEB_TOKEN}}
+          SERVER_URL: ${{secrets.SERVER_URL}}
+          MAPBOX_TOKEN_PATH: ${{secrets.MAPBOX_TOKEN_PATH}}
+          CLOTHES_CONTAINERS_PATH: ${{secrets.CLOTHES_CONTAINERS_PATH}}

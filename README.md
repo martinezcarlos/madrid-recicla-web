@@ -27,8 +27,8 @@ Madrid Recicla Web uses a set of argument variables that need to be setup before
 
 ```sh
 ARG SERVER_URL=${SERVER_URL} # Madrid Recicla Server's URL
-ARG CLOTHES_CONTAINERS_PATH=${CLOTHES_CONTAINERS_PATH} # Path provided by Madrid Recicla Server.
-ARG MAPBOX_WEB_TOKEN:${MAPBOX_WEB_TOKEN} # Mapbox Token, specific for Madrid Recicla Web.
+ARG CLOTHES_CONTAINERS_PATH=${CLOTHES_CONTAINERS_PATH} # Path provided by Madrid Recicla Server, relative to clothes containers.
+ARG MAPBOX_TOKEN_PATH:${MAPBOX_TOKEN_PATH} # Path provided by Madrid Recicla Server, relative to Mapbox Token.
 ```
 >⚠️ Notice the `ARG` keyword before each key=value pairs.
 
@@ -50,9 +50,9 @@ To build the image
 To run the image inside a Docker container
 
 ```zsh
-% docker run -p 8000:80 madrid-recicla-web
+% docker run -p 8000:80 -e PORT=80 madrid-recicla-web
 ```
-> \* `-p "${WEB_PORT}:${WEB_CONTAINER_PORT}"` will expose port _WEB_CONTAINER_PORT_ inside the container to port _WEB_PORT_ outside the container.
+> \* `-p "${WEB_PORT}:${WEB_CONTAINER_PORT}"` will expose port _WEB_CONTAINER_PORT_ inside the container to port _WEB_PORT_ outside the container. The `-e PORT=${WEB_CONTAINER_PORT}` will provide an environment variable called `PORT`. This PORT will be used at image deploy time to replace the placeholder in `nginx.conf` file.
 
 ### Running the application in your local machine
 
@@ -68,8 +68,8 @@ You can, however, manually run your web app without using Docker by following th
 
     ```sh
     SERVER_URL=${SERVER_URL} # Madrid Recicla Server's URL
-    CLOTHES_CONTAINERS_PATH=${CLOTHES_CONTAINERS_PATH} # Path provided by Madrid Recicla Server.
-    MAPBOX_WEB_TOKEN:${MAPBOX_WEB_TOKEN} # Mapbox Token, specific for Madrid Recicla Web.
+    CLOTHES_CONTAINERS_PATH=${CLOTHES_CONTAINERS_PATH} # Path provided by Madrid Recicla Server, relative to clothes containers.
+    MAPBOX_TOKEN_PATH:${MAPBOX_TOKEN_PATH} # Path provided by Madrid Recicla Server, relative to Mapbox Token.
     ```
     >⚠️ Notice there are **NO** `ARG` keyword before each key=value pairs as it was in the `.build.args` file in the previous section.
 

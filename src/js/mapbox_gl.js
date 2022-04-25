@@ -1,6 +1,7 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import { fetchClothesContainers } from "./clothes-containers.js";
+import { checkResponseStatus } from "./entry.js";
 
 // Global vars //
 
@@ -10,6 +11,18 @@ var zoom = 15;
 var map;
 
 /////// functions /////
+async function fetchMapboxToken() {
+    var url = process.env.SERVER_URL + process.env.MAPBOX_TOKEN_PATH
+    return fetch(url, {
+        method: 'GET',
+        cache: "default",
+        mode: 'cors'
+    })
+        .then(checkResponseStatus)
+        .then(response => response.text())
+        .catch(error => console.error('error', error));
+}
+
 async function initCoordinates() {
     let madridCenterLongitude = -3.7037513986083885;
     let madridCenterLatitude = 40.416856446443205;
@@ -38,7 +51,12 @@ async function initCoordinates() {
 }
 
 async function initMapbox() {
-    mapboxgl.accessToken = process.env.MAPBOX_WEB_TOKEN;
+    var mapboxAccessToken = localStorage.getItem("mapboxAccessToken");
+    if (mapboxAccessToken === null) {
+        mapboxAccessToken = await fetchMapboxToken();
+        localStorage.setItem("mapboxAccessToken", mapboxAccessToken);
+    }
+    mapboxgl.accessToken = mapboxAccessToken;
     map = new mapboxgl.Map({
         container: 'map', // HTML container ID
         style: 'mapbox://styles/mapbox/streets-v9', // style URL
@@ -71,24 +89,31 @@ export async function initMap() {
     }
 }
 
-function addMarkersManually() {
-    fetchClothesContainers().then(cc => {
-        for (const feature of cc.features) {
-            // create a HTML element for each feature
-            const el = document.createElement('div');
-            el.className = 'marker';
-
-            // make a marker for each feature and add to the map
-            new mapboxgl.Marker(el)
-                .setLngLat(feature.geometry.coordinates)
-                .setPopup(
-                    new mapboxgl.Popup({ offset: 25 }) // add popups
-                        .setHTML(preparePopupContent(feature))
-                )
-                .addTo(map);
-        }
-        console.info("Adding markers manually");
-    });
+async function addMarkersManually() {
+    var clothesContainers = localStorage.getItem("clothesContainers");
+    if (clothesContainers === null) {
+        clothesContainers = await fetchClothesContainers();
+        localStorage.setItem("clothesContainers", JSON.stringify(clothesContainers));
+    } else {
+        clothesContainers = JSON.parse(clothesContainers);
+    }
+    Promise.resolve(clothesContainers)
+        .then(cc => {
+            for (const feature of cc.features) {
+                // create a HTML element for each feature
+                const el = document.createElement('div');
+                el.className = 'marker';
+                // make a marker for each feature and add to the map
+                new mapboxgl.Marker(el)
+                    .setLngLat(feature.geometry.coordinates)
+                    .setPopup(
+                        new mapboxgl.Popup({ offset: 25 }) // add popups
+                            .setHTML(preparePopupContent(feature))
+                    )
+                    .addTo(map);
+            }
+            console.info("Adding markers manually");
+        });
 }
 
 function preparePopupContent(feature) {
