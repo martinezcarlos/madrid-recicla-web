@@ -11,43 +11,37 @@ var zoom = 15;
 var map;
 
 /////// functions /////
-async function fetchMapboxToken() {
-    var url = process.env.SERVER_URL + process.env.MAPBOX_TOKEN_PATH
-    return fetch(url, {
-        method: 'GET',
-        cache: "default",
-        mode: 'cors'
-    })
-        .then(checkResponseStatus)
-        .then(response => response.text())
-        .catch(error => console.error('error', error));
+export async function initMap() {
+    try {
+        await initCoordinates();
+        await initMapbox();
+        addMarkers();
+        addGeoLocate();
+    } catch (error) {
+        console.error('Error initializing map: ', error);
+    }
 }
 
 async function initCoordinates() {
-    let madridCenterLongitude = -3.7037513986083885;
-    let madridCenterLatitude = 40.416856446443205;
-    mapLongitude = madridCenterLongitude;
-    mapLatitude = madridCenterLatitude;
-
-    console.info("Initializing coordinates");
-
-    // return new Promise((resolve, reject) => {
-    //     navigator.geolocation.watchPosition(
-    //         position => resolve(position),
-    //         error => reject(error)
-    //     )
-    // }).then(position => {
-    //     console.info('Using user coordinates');
-    //     mapLongitude = position.coords.longitude;
-    //     mapLatitude = position.coords.latitude;
-    // }).catch(error => {
-    //     console.warn(`ERROR(${error.code}): ${error.message}`);
-    //     console.info('Using default coordinates');
-    //     let madridCenterLongitude = -3.7037513986083885;
-    //     let madridCenterLatitude = 40.416856446443205;
-    //     mapLongitude = madridCenterLongitude;
-    //     mapLatitude = madridCenterLatitude;
-    // });
+    return new Promise((resolve, reject) => {
+        var options = {
+            timeout: 1500,
+        };
+        navigator.geolocation.getCurrentPosition(
+            position => resolve(position),
+            error => reject(error),
+            options
+        )
+    }).then(position => {
+        console.info('Using user coordinates');
+        mapLongitude = position.coords.longitude;
+        mapLatitude = position.coords.latitude;
+    }).catch(error => {
+        console.warn(`ERROR(${error.code}): ${error.message}`);
+        console.info('Using default coordinates');
+        mapLongitude =  -3.7037513986083885; // MadridCenterLongitude
+        mapLatitude = 40.416856446443205; // MadridCenterLatitude
+    });
 }
 
 async function initMapbox() {
@@ -63,7 +57,18 @@ async function initMapbox() {
         center: [mapLongitude, mapLatitude], // starting position as [lng, lat]
         zoom: zoom
     });
-    console.info("Initializing mapbox");
+}
+
+async function fetchMapboxToken() {
+    var url = process.env.SERVER_URL + process.env.MAPBOX_TOKEN_PATH
+    return fetch(url, {
+        method: 'GET',
+        cache: "default",
+        mode: 'cors'
+    })
+        .then(checkResponseStatus)
+        .then(response => response.text())
+        .catch(error => console.error('error', error));
 }
 
 function addGeoLocate() {
@@ -74,22 +79,10 @@ function addGeoLocate() {
         trackUserLocation: true,
         showUserHeading: true
     })
-    console.info("Adding geolocate");
     map.addControl(geolocate);
 }
 
-export async function initMap() {
-    try {
-        await initCoordinates();
-        await initMapbox();
-        addMarkersManually();
-        addGeoLocate();
-    } catch (error) {
-        console.error('My error: ', error);
-    }
-}
-
-async function addMarkersManually() {
+async function addMarkers() {
     var clothesContainers = localStorage.getItem("clothesContainers");
     if (clothesContainers === null) {
         clothesContainers = await fetchClothesContainers();
@@ -112,7 +105,6 @@ async function addMarkersManually() {
                     )
                     .addTo(map);
             }
-            console.info("Adding markers manually");
         });
 }
 
