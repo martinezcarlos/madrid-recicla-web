@@ -4,16 +4,25 @@
 
 **Madrid Recicla Web** is part of the distributed application **Madrid Recicla**.
 
-Madrid Recicla Web allows user to find and filter recycling points of interes like recycling containers (for clothes, vegetable oil, batteries, paper, glass, organic, etc.) as well as static and mobile recycling units.
+- [Madrid Recicla Database]
+- [Madrid Recicla Server]
+- [Madrid Recicla Web]
+
+**Madrid Recicla Web** allows user to find and filter recycling points of interes like recycling containers (for clothes, vegetable oil, batteries, paper, glass, organic, etc.) as well as static and mobile recycling units.
 
 ## Contents  <!-- omit in toc -->
 
+- [Before starting](#before-starting)
 - [Using the service](#using-the-service)
 - [Developer information](#developer-information)
   - [Build argument variables](#build-argument-variables)
   - [Running the application in a Docker container](#running-the-application-in-a-docker-container)
   - [Running the application in your local machine](#running-the-application-in-your-local-machine)
 - [Others](#others)
+
+## Before starting
+
+Before cloning this repository make sure you've read the [Madrid Recicla Development Template] guide. This guide will help you to setup your local environment.
 
 ## Using the service
 
@@ -25,7 +34,7 @@ Madrid Recicla Web displays a map with the recycling points of interest, centere
 
 Madrid Recicla Web uses a set of argument variables that need to be setup before building the application. These arguments are used to build static files which will eventually be added to the Docker image. To do so, create a file called `build.args` in the root directory of the project with proper values for the following keys:
 
-```sh
+```properties
 ARG SERVER_URL=${SERVER_URL} # Madrid Recicla Server's URL
 ARG CLOTHES_CONTAINERS_PATH=${CLOTHES_CONTAINERS_PATH} # Path provided by Madrid Recicla Server, relative to clothes containers.
 ARG MAPBOX_TOKEN_PATH:${MAPBOX_TOKEN_PATH} # Path provided by Madrid Recicla Server, relative to Mapbox Token.
@@ -66,7 +75,7 @@ You can, however, manually run your web app without using Docker by following th
 
 2. Create a file called `.env` in the root directory of the project with proper values for the following keys:
 
-    ```sh
+    ```properties
     SERVER_URL=${SERVER_URL} # Madrid Recicla Server's URL
     CLOTHES_CONTAINERS_PATH=${CLOTHES_CONTAINERS_PATH} # Path provided by Madrid Recicla Server, relative to clothes containers.
     MAPBOX_TOKEN_PATH:${MAPBOX_TOKEN_PATH} # Path provided by Madrid Recicla Server, relative to Mapbox Token.
@@ -95,4 +104,8 @@ You can, however, manually run your web app without using Docker by following th
 [![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
 
 <!-- Links -->
+[Madrid Recicla Database]: <https://github.com/martinezcarlos/madrid-recicla-dev-template/blob/main/db/README.md>
+[Madrid Recicla Server]: <https://github.com/martinezcarlos/madrid-recicla-server>
+[Madrid Recicla Web]: <https://github.com/martinezcarlos/madrid-recicla-web>
+[Madrid Recicla Development Template]: <https://github.com/martinezcarlos/madrid-recicla-dev-template>
 [Docker Containers]: <https://docs.docker.com/language/nodejs/>
