@@ -37,7 +37,7 @@ Madrid Recicla Web uses a set of argument variables that need to be setup before
 ```properties
 ARG SERVER_URL=${SERVER_URL} # Madrid Recicla Server's URL
 ARG CLOTHES_CONTAINERS_PATH=${CLOTHES_CONTAINERS_PATH} # Path provided by Madrid Recicla Server, relative to clothes containers.
-ARG MAPBOX_TOKEN_PATH:${MAPBOX_TOKEN_PATH} # Path provided by Madrid Recicla Server, relative to Mapbox Token.
+ARG MAPBOX_TOKEN_PATH=${MAPBOX_TOKEN_PATH} # Path provided by Madrid Recicla Server, relative to Mapbox Token.
 ```
 >⚠️ Notice the `ARG` keyword before each key=value pairs.
 
@@ -78,7 +78,7 @@ You can, however, manually run your web app without using Docker by following th
     ```properties
     SERVER_URL=${SERVER_URL} # Madrid Recicla Server's URL
     CLOTHES_CONTAINERS_PATH=${CLOTHES_CONTAINERS_PATH} # Path provided by Madrid Recicla Server, relative to clothes containers.
-    MAPBOX_TOKEN_PATH:${MAPBOX_TOKEN_PATH} # Path provided by Madrid Recicla Server, relative to Mapbox Token.
+    MAPBOX_TOKEN_PATH=${MAPBOX_TOKEN_PATH} # Path provided by Madrid Recicla Server, relative to Mapbox Token.
     ```
     >⚠️ Notice there are **NO** `ARG` keyword before each key=value pairs as it was in the `.build.args` file in the previous section.
 
